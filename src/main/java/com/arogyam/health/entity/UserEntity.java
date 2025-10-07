@@ -2,6 +2,7 @@ package com.arogyam.health.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -38,7 +39,6 @@ public class UserEntity {
 
     private String state;
 
-    // Using String for village name - simpler approach
     private String village;
 
     @CreationTimestamp
@@ -47,6 +47,9 @@ public class UserEntity {
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     // Default constructor
     public UserEntity() {

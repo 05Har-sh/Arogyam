@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "villages")
@@ -38,15 +39,23 @@ public class VillageEntity {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "village", cascade = CascadeType.ALL)
+    private List<UserEntity> users;
+
+    @OneToMany(mappedBy = "village", cascade = CascadeType.ALL)
+    private List<HealthReportEntity> healthReports;
+
+
     // Default constructor
     public VillageEntity() {
     }
 
     // Constructor with essential fields
-    public VillageEntity(String name, String district, String state) {
+    public VillageEntity(String name, String district, String state, Integer population) {
         this.name = name;
         this.district = district;
         this.state = state;
+        this.population = population;
     }
 
     // All arguments constructor
