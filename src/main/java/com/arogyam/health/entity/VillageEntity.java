@@ -214,7 +214,7 @@ public class VillageEntity {
         }
     }
 
-    // equals() method
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -233,7 +233,7 @@ public class VillageEntity {
         return createdAt != null ? createdAt.equals(that.createdAt) : that.createdAt == null;
     }
 
-    // hashCode() method
+
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
@@ -248,7 +248,7 @@ public class VillageEntity {
         return result;
     }
 
-    // toString() method
+
     @Override
     public String toString() {
         return "VillageEntity{" +

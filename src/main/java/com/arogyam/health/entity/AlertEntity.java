@@ -7,7 +7,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "alerts")
+@Table(name = "alerts", indexes = {
+        @Index(name = "idx_village_id", columnList = "village_id"),
+        @Index(name = "idx_created_by", columnList = "created_by"),
+        @Index(name = "idx_is_active", columnList = "isActive"),
+        @Index(name = "idx_priority", columnList = "priority")
+})
 @EntityListeners(AuditingEntityListener.class)
 public class AlertEntity {
 
@@ -16,7 +21,7 @@ public class AlertEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private AlertType type;
 
     @Column(nullable = false, length = 200)
@@ -26,7 +31,7 @@ public class AlertEntity {
     private String message;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 20)
     private AlertPriority priority;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,13 +42,14 @@ public class AlertEntity {
     @JoinColumn(name = "created_by", nullable = false)
     private UserEntity createdBy;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
     private Boolean isActive = true;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isRead = false;
 
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     // Constructors
@@ -60,41 +66,97 @@ public class AlertEntity {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public AlertType getType() { return type; }
-    public void setType(AlertType type) { this.type = type; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public AlertType getType() {
+        return type;
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public void setType(AlertType type) {
+        this.type = type;
+    }
 
-    public AlertPriority getPriority() { return priority; }
-    public void setPriority(AlertPriority priority) { this.priority = priority; }
+    public String getTitle() {
+        return title;
+    }
 
-    public VillageEntity getVillage() { return village; }
-    public void setVillage(VillageEntity village) { this.village = village; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public UserEntity getCreatedBy() { return createdBy; }
-    public void setCreatedBy(UserEntity createdBy) { this.createdBy = createdBy; }
+    public String getMessage() {
+        return message;
+    }
 
-    public Boolean getIsActive() { return isActive; }
-    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public Boolean getIsRead() { return isRead; }
-    public void setIsRead(Boolean isRead) { this.isRead = isRead; }
+    public AlertPriority getPriority() {
+        return priority;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setPriority(AlertPriority priority) {
+        this.priority = priority;
+    }
+
+    public VillageEntity getVillage() {
+        return village;
+    }
+
+    public void setVillage(VillageEntity village) {
+        this.village = village;
+    }
+
+    public UserEntity getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(UserEntity createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Boolean getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(Boolean isRead) {
+        this.isRead = isRead;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public enum AlertType {
-        OUTBREAK_WARNING, WATER_CONTAMINATION, HEALTH_ADVISORY, SYSTEM_NOTIFICATION
+        OUTBREAK_WARNING,
+        WATER_CONTAMINATION,
+        HEALTH_ADVISORY,
+        SYSTEM_NOTIFICATION
     }
 
     public enum AlertPriority {
-        LOW, MEDIUM, HIGH, CRITICAL
+        LOW,
+        MEDIUM,
+        HIGH,
+        CRITICAL
     }
 }
