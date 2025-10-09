@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal; // <-- NEW IMPORT
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,22 +33,25 @@ public class WaterQualityEntity {
     @NotNull(message = "Source type is required")
     private SourceType sourceType;
 
+    // FIX: Changed type from Double to BigDecimal to support precision/scale
     @DecimalMin(value = "0.0", message = "pH level must be atleast 0")
     @DecimalMax(value = "14.4", message = "pH level cannot exceed 14")
     @Column(precision = 4, scale = 2)
-    private Double phLevel;
+    private BigDecimal phLevel;
 
+    // FIX: Changed type from Double to BigDecimal to support precision/scale
     @DecimalMin(value = "0.0", message = "Turbidity must be non-negative")
     @Column(precision = 4, scale = 2)
-    private Double turbidity;
+    private BigDecimal turbidity;
 
     @Min(value = 0, message = "Bacterial count must be non-negative")
     private Integer bacterialCount;
 
+    // FIX: Changed type from Double to BigDecimal to support precision/scale
     @DecimalMin(value = "-10.0", message = "Temperature must be at least -10°C")
     @DecimalMax(value = "100.0", message = "Temperature cannot exceed 100°C")
     @Column(precision = 5, scale = 2)
-    private Double temperature;
+    private BigDecimal temperature;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -64,15 +68,17 @@ public class WaterQualityEntity {
     @NotNull(message = "Village is required")
     private VillageEntity village;
 
+    // FIX: Changed type from Double to BigDecimal to support precision/scale
     @DecimalMin(value = "-90.0", message = "Latitude must be between -90 and 90")
     @DecimalMax(value = "90.0", message = "Latitude must be between -90 and 90")
     @Column(precision = 10, scale = 8)
-    private Double latitude;
+    private BigDecimal latitude;
 
+    // FIX: Changed type from Double to BigDecimal to support precision/scale
     @DecimalMin(value = "-180.0", message = "Longitude must be between -180 and 180")
     @DecimalMax(value = "180.0", message = "Longitude must be between -180 and 180")
     @Column(precision = 11, scale = 8)
-    private Double longitude;
+    private BigDecimal longitude;
 
     @Size(max = 500, message = "Remarks cannot exceed 500 characters")
     @Column(length = 500)
@@ -94,7 +100,7 @@ public class WaterQualityEntity {
         this.village = village;
     }
 
-    // Getters and Setters
+    // Getters and Setters (Updated for BigDecimal)
     public Long getId() {
         return id;
     }
@@ -119,19 +125,23 @@ public class WaterQualityEntity {
         this.sourceType = sourceType;
     }
 
-    public Double getPhLevel() {
+    // Updated getter/setter for BigDecimal
+    public BigDecimal getPhLevel() {
         return phLevel;
     }
 
-    public void setPhLevel(Double phLevel) {
+    // Updated getter/setter for BigDecimal
+    public void setPhLevel(BigDecimal phLevel) {
         this.phLevel = phLevel;
     }
 
-    public Double getTurbidity() {
+    // Updated getter/setter for BigDecimal
+    public BigDecimal getTurbidity() {
         return turbidity;
     }
 
-    public void setTurbidity(Double turbidity) {
+    // Updated getter/setter for BigDecimal
+    public void setTurbidity(BigDecimal turbidity) {
         this.turbidity = turbidity;
     }
 
@@ -143,11 +153,13 @@ public class WaterQualityEntity {
         this.bacterialCount = bacterialCount;
     }
 
-    public Double getTemperature() {
+    // Updated getter/setter for BigDecimal
+    public BigDecimal getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(Double temperature) {
+    // Updated getter/setter for BigDecimal
+    public void setTemperature(BigDecimal temperature) {
         this.temperature = temperature;
     }
 
@@ -175,19 +187,23 @@ public class WaterQualityEntity {
         this.village = village;
     }
 
-    public Double getLatitude() {
+    // Updated getter/setter for BigDecimal
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    // Updated getter/setter for BigDecimal
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongitude() {
+    // Updated getter/setter for BigDecimal
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    // Updated getter/setter for BigDecimal
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
 
