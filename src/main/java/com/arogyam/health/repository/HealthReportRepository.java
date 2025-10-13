@@ -26,8 +26,10 @@ public interface HealthReportRepository extends JpaRepository<HealthReportEntity
     List<HealthReportEntity> findRecentReportsByDistrict(@Param("district") String district,
                                                          @Param("startDate") LocalDateTime startDate);
 
-    @Query("SELECT h FROM HealthReportEntity h WHERE h.symptoms LIKE %:symptom% " +
-            "AND h.reportDate >= :startDate")
+    @Query(value = "SELECT * FROM health_reports h WHERE " +
+            "h.symptoms::text ILIKE CONCAT('%', :symptom, '%') " +
+            "AND h.report_date >= :startDate",
+            nativeQuery = true)
     List<HealthReportEntity> findBySymptomContaining(@Param("symptom") String symptom,
                                                      @Param("startDate") LocalDateTime startDate);
 

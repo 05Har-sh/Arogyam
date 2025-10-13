@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @Transactional
 public class AuthService {
@@ -34,28 +36,34 @@ public class AuthService {
 
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         try {
+            //authenticate user
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsername(),
                             loginRequest.getPassword()
                     )
             );
-
+            //generate JWT token
             String token = jwtTokenProvider.generateToken(authentication);
 
+            //fetch user details
             UserEntity user = userRepository.findByUsername(loginRequest.getUsername())
                     .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-            return new LoginResponseDto(
-                    token,
-                    user.getId(),
-                    user.getUsername(),
-                    user.getFullName(),
-                    user.getRole().toString(),
-                    user.getDistrict(),
-                    user.getVillage() != null ? user.getVillage().getId() : null,
-                    user.getVillage() != null ? user.getVillage().getName() : null
-            );
+            //update last login timestamp
+            user.setLastLogin(LocalDateTime.now());
+            userRepository.save(user);
+
+            return LoginResponseDto.builder()
+                    .token(token)
+                    .userId(user.getId())
+                    .username(user.getUsername())
+                    .fullName(user.getFullName())
+                    .role(user.getRole())
+                    .district(user.getDistrict())
+                    .state(user.getState())
+                    .villageName(user.getVillage())
+                    .build();
         } catch (Exception e) {
             throw new UnauthorizedException("Invalid username or password");
         }
@@ -71,15 +79,24 @@ public class AuthService {
         if (userRepository.existsByPhoneNumber(registrationDto.getPhoneNumber())) {
             throw new IllegalArgumentException("Phone number is already registered!");
         }
+        //check if email already exists
+        if (registrationDto.getEmail() != null && !registrationDto.getEmail().isEmpty()){
+            if (userRepository.existsByEmail(registrationDto.getEmail())){
+                throw new IllegalArgumentException("Email already registered!");
+            }
+        }
 
         // Create new user
         UserEntity user = new UserEntity();
         user.setUsername(registrationDto.getUsername());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
         user.setFullName(registrationDto.getFullName());
         user.setPhoneNumber(registrationDto.getPhoneNumber());
-        user.setRole(UserEntity.UserRole.valueOf(registrationDto.getRole()));
+        user.setRole(registrationDto.getRole());
         user.setDistrict(registrationDto.getDistrict());
+        user.setState(registrationDto.getState());
+        user.setVillage(registrationDto.getVillage());
+        user.setEmail(registrationDto.getEmail());
 
         return userRepository.save(user);
     }
