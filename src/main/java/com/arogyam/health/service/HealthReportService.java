@@ -145,9 +145,9 @@ public class HealthReportService {
                 .orElseThrow(() -> new ResourceNotFoundException("Health report not found with id: " + reportId));
     }
 
-    public List<HealthReportEntity> getUnverifiedReports() {
-        return healthReportRepository.findByIsVerifiedFalse();
-    }
+//    public List<HealthReportEntity> getUnverifiedReports() {
+//        return healthReportRepository.findByIsVerifiedFalse();
+//    }
 
     public HealthReportEntity verifyReport(Long reportId, Long doctorId) {
         HealthReportEntity report = getReportById(reportId);
