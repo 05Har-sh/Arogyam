@@ -170,19 +170,19 @@ public class HealthReportController {
         }
     }
 
-    @GetMapping("/unverified")
-    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponseDto<List<HealthReportEntity>>> getUnverifiedReports() {
-        try {
-            List<HealthReportEntity> reports = healthReportService.getUnverifiedReports();
-            return ResponseEntity.ok(
-                    ApiResponseDto.success("Unverified reports retrieved successfully", reports));
-        } catch (Exception e) {
-            logger.error("Error retrieving unverified reports", e);
-            return ResponseEntity.badRequest()
-                    .body(ApiResponseDto.error("Failed to retrieve unverified reports: " + e.getMessage()));
-        }
-    }
+//    @GetMapping("/unverified")
+//    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+//    public ResponseEntity<ApiResponseDto<List<HealthReportEntity>>> getUnverifiedReports() {
+//        try {
+//            List<HealthReportEntity> reports = healthReportService.getUnverifiedReports();
+//            return ResponseEntity.ok(
+//                    ApiResponseDto.success("Unverified reports retrieved successfully", reports));
+//        } catch (Exception e) {
+//            logger.error("Error retrieving unverified reports", e);
+//            return ResponseEntity.badRequest()
+//                    .body(ApiResponseDto.error("Failed to retrieve unverified reports: " + e.getMessage()));
+//        }
+//    }
 
     @PutMapping("/{reportId}/verify")
     @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
