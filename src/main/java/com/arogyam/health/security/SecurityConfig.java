@@ -65,13 +65,23 @@ public class SecurityConfig {
 
                 // Modern authorization using authorizeHttpRequests (not deprecated authorizeRequests)
                 .authorizeHttpRequests(authz -> authz
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()           // Modern requestMatchers (not antMatchers)
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/error").permitAll()                 // Add error endpoint
                         .anyRequest().authenticated()
+
                 )
+
 
                 // Modern authentication provider configuration
                 .authenticationProvider(authenticationProvider())
