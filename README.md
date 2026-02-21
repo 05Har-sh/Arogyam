@@ -45,6 +45,12 @@ Mobile: Flutter 3.16.0 (Android/iOS)
 AI/ML: Python-based prediction models (future integration)
 Infrastructure: Docker, JWT, REST APIs
 
+
+**⚠️ IMPORTANT NOTICE**
+
+This project is **currently not under active development**. 
+
+
 ## 📖 API Documentation
 
 ### 🔐 Authentication
