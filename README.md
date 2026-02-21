@@ -1,6 +1,6 @@
 # Arogyam 🩺 - Smart Rural Health Monitoring System
 
-**Arogyam** is an AI-powered early warning system designed for rural healthcare workers (ASHA workers) in Northeast India to detect disease outbreaks before they spread. Built with Spring Boot microservices, PostgreSQL, and Flutter mobile app.
+**Arogyam** is an AI-powered early warning system designed for rural healthcare workers (ASHA workers) in Northeast India to detect disease outbreaks before they spread. Built with Spring Boot , PostgreSQL.
 
 ## ✨ Features
 
