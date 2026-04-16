@@ -20,7 +20,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/health-reports")
-@CrossOrigin(origins = "*")
 public class HealthReportController {
 
     private static final Logger logger = LoggerFactory.getLogger(HealthReportController.class);

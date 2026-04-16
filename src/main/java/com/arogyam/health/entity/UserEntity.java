@@ -39,7 +39,9 @@ public class UserEntity {
 
     private String state;
 
-    private String village;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "village_id")
+    private VillageEntity village;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -151,11 +153,11 @@ public class UserEntity {
         this.state = state;
     }
 
-    public String getVillage() {
+    public VillageEntity getVillage() {
         return village;
     }
 
-    public void setVillage(String village) {
+    public void setVillage(VillageEntity village) {
         this.village = village;
     }
 
@@ -187,7 +189,7 @@ public class UserEntity {
                 ", email='" + email + '\'' +
                 ", district='" + district + '\'' +
                 ", state='" + state + '\'' +
-                ", village='" + village + '\'' +
+                ", village='" + (village != null ? village.getName() : null) + '\'' +
                 ", createdAt=" + createdAt +
                 ", lastLogin=" + lastLogin +
                 '}';

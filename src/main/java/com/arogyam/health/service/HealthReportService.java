@@ -33,6 +33,9 @@ public class HealthReportService {
     @Autowired
     private VillageRepository villageRepository;
 
+    @Autowired
+    private OutbreakPredictionService outbreakPredictionService;
+
     // GeometryFactory for creating Point objects
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
@@ -160,10 +163,7 @@ public class HealthReportService {
         return healthReportRepository.save(report);
     }
 
-    // Placeholder for outbreak detection (implement later)
     private void checkForOutbreak(Long villageId) {
-        // Check if multiple similar reports in same area
-        // If threshold exceeded, create alert
-        // This can be implemented when AlertService is ready
+        outbreakPredictionService.analyzeOutbreakRisk(villageId);
     }
 }

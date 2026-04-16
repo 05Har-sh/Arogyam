@@ -33,4 +33,6 @@ public interface WaterQualityReportRepository extends JpaRepository<WaterQuality
             "AND w.qualityStatus = :status")
     Long countByVillageAndStatus(@Param("villageId") Long villageId,
                                  @Param("status") WaterQualityEntity.QualityStatus status);
+
+    Long countByVillageId(Long villageId);
 }

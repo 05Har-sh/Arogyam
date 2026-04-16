@@ -2,10 +2,14 @@ package com.arogyam.health.service;
 
 import com.arogyam.health.entity.*;
 import com.arogyam.health.repository.HealthReportRepository;
+import com.arogyam.health.repository.UserRepository;
 import com.arogyam.health.repository.VillageRepository;
 import com.arogyam.health.repository.WaterQualityReportRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OutbreakPredictionService {
+    private static final Logger logger = LoggerFactory.getLogger(OutbreakPredictionService.class);
 
     @Autowired
     private HealthReportRepository healthReportRepository;
@@ -27,6 +32,9 @@ public class OutbreakPredictionService {
 
     @Autowired
     private AlertService alertService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private static final int ANALYSIS_WINDOW_DAYS = 7;
     private static final int OUTBREAK_THRESHOLD = 5; // 5 or more similar cases
@@ -173,13 +181,16 @@ public class OutbreakPredictionService {
         alert.setPriority(priority);
         alert.setVillage(village);
 
-        // Get system user (or use a default admin user)
-        // For now, we'll set createdBy to null or you can fetch an admin user
-        alert.setCreatedBy(null); // TODO: Set to system/admin user
+        UserEntity systemUser = userRepository.findFirstByRoleOrderByIdAsc(UserRole.ADMIN)
+                .or(() -> userRepository.findFirstByRoleOrderByIdAsc(UserRole.HEALTH_OFFICIAL))
+                .or(() -> userRepository.findFirstByOrderByIdAsc())
+                .orElseThrow(() -> new IllegalStateException("Cannot create alert without a valid creator user"));
+        alert.setCreatedBy(systemUser);
 
         alertService.createAlert(alert);
     }
 
+    @Scheduled(cron = "${app.outbreak.analysis.cron:0 */30 * * * *}")
     public void performScheduledAnalysis() {
         // This method runs periodically to analyze all villages
         List<VillageEntity> villages = villageRepository.findAll();
@@ -188,8 +199,7 @@ public class OutbreakPredictionService {
             try {
                 analyzeOutbreakRisk(village.getId());
             } catch (Exception e) {
-                // Log error but continue with other villages
-                System.err.println("Error analyzing village " + village.getName() + ": " + e.getMessage());
+                logger.error("Error analyzing village {}", village.getName(), e);
             }
         }
     }

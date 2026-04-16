@@ -4,6 +4,10 @@ public enum UserRole {
     ASHA_WORKER("ASHA Worker"),
     CHW("Community Health Worker"),
     VOLUNTEER("Volunteer"),
+    HEALTH_WORKER("Health Worker"),
+    FIELD_AGENT("Field Agent"),
+    DOCTOR("Doctor"),
+    ANALYST("Analyst"),
     HEALTH_OFFICIAL("Health Official"),
     ADMIN("Administrator");
 

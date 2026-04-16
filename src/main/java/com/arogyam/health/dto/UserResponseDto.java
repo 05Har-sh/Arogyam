@@ -14,6 +14,7 @@ public class UserResponseDto {
     private UserRole role;
     private String district;
     private String state;
+    private Long villageId;
     private String villageName;
     private Boolean isActive;
     private LocalDateTime createdAt;
@@ -25,7 +26,7 @@ public class UserResponseDto {
 
     // All arguments constructor
     public UserResponseDto(Long id, String username, String fullName, String phoneNumber,
-                           String email, UserRole role, String district, String state,
+                           String email, UserRole role, String district, String state, Long villageId,
                            String villageName, Boolean isActive, LocalDateTime createdAt,
                            LocalDateTime lastLogin) {
         this.id = id;
@@ -36,6 +37,7 @@ public class UserResponseDto {
         this.role = role;
         this.district = district;
         this.state = state;
+        this.villageId = villageId;
         this.villageName = villageName;
         this.isActive = isActive;
         this.createdAt = createdAt;
@@ -107,6 +109,14 @@ public class UserResponseDto {
         this.state = state;
     }
 
+    public Long getVillageId() {
+        return villageId;
+    }
+
+    public void setVillageId(Long villageId) {
+        this.villageId = villageId;
+    }
+
     public String getVillageName() {
         return villageName;
     }
@@ -154,6 +164,7 @@ public class UserResponseDto {
         private UserRole role;
         private String district;
         private String state;
+        private Long villageId;
         private String villageName;
         private Boolean isActive;
         private LocalDateTime createdAt;
@@ -199,6 +210,11 @@ public class UserResponseDto {
             return this;
         }
 
+        public UserResponseDtoBuilder villageId(Long villageId) {
+            this.villageId = villageId;
+            return this;
+        }
+
         public UserResponseDtoBuilder villageName(String villageName) {
             this.villageName = villageName;
             return this;
@@ -221,7 +237,7 @@ public class UserResponseDto {
 
         public UserResponseDto build() {
             return new UserResponseDto(id, username, fullName, phoneNumber, email, role,
-                    district, state, villageName, isActive, createdAt, lastLogin);
+                    district, state, villageId, villageName, isActive, createdAt, lastLogin);
         }
     }
 
@@ -241,6 +257,7 @@ public class UserResponseDto {
         if (role != that.role) return false;
         if (!Objects.equals(district, that.district)) return false;
         if (!Objects.equals(state, that.state)) return false;
+        if (!Objects.equals(villageId, that.villageId)) return false;
         if (!Objects.equals(villageName, that.villageName)) return false;
         if (!Objects.equals(isActive, that.isActive)) return false;
         if (!Objects.equals(createdAt, that.createdAt)) return false;
@@ -258,6 +275,7 @@ public class UserResponseDto {
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (district != null ? district.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (villageId != null ? villageId.hashCode() : 0);
         result = 31 * result + (villageName != null ? villageName.hashCode() : 0);
         result = 31 * result + (isActive != null ? isActive.hashCode() : 0);
         result = 31 * result + (createdAt != null ? createdAt.hashCode() : 0);
@@ -277,6 +295,7 @@ public class UserResponseDto {
                 ", role=" + role +
                 ", district='" + district + '\'' +
                 ", state='" + state + '\'' +
+                ", villageId=" + villageId +
                 ", villageName='" + villageName + '\'' +
                 ", isActive=" + isActive +
                 ", createdAt=" + createdAt +

@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     boolean existsByEmail(String email);
 
-    List<UserEntity> findByVillageAndRole(String village, UserRole role);
+    List<UserEntity> findByVillageIdAndRole(Long villageId, UserRole role);
 
     List<UserEntity> findByDistrictAndRole(String district, UserRole role);
 
@@ -34,4 +34,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query("SELECT COUNT(u) FROM UserEntity u WHERE u.role = :role AND u.district = :district")
     long countByRoleAndDistrict(@Param("role") UserRole role, @Param("district") String district);
+
+    Optional<UserEntity> findFirstByRoleOrderByIdAsc(UserRole role);
+
+    Optional<UserEntity> findFirstByOrderByIdAsc();
 }

@@ -23,7 +23,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*") // Consider restricting this in production
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -321,7 +320,8 @@ public class UserController {
         dto.setLastLogin(user.getLastLogin());
 
         if (user.getVillage() != null) {
-            dto.setVillageName(user.getVillage());
+            dto.setVillageId(user.getVillage().getId());
+            dto.setVillageName(user.getVillage().getName());
         }
 
         return dto;

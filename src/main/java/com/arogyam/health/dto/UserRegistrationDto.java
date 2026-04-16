@@ -34,7 +34,9 @@ public class UserRegistrationDto {
     @Size(max = 100, message = "State must not exceed 100 characters")
     private String state;
 
-    // Changed from Long VillageId to String village to match entity structure
+    private Long villageId;
+
+    // Optional legacy field for compatibility
     @Size(max = 100, message = "Village must not exceed 100 characters")
     private String village;
 
@@ -48,7 +50,7 @@ public class UserRegistrationDto {
 
     // All arguments constructor
     public UserRegistrationDto(String username, String password, String fullName, String phoneNumber,
-                               String email, UserRole role, String district, String state, String village) {
+                               String email, UserRole role, String district, String state, Long villageId, String village) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
@@ -57,6 +59,7 @@ public class UserRegistrationDto {
         this.role = role;
         this.district = district;
         this.state = state;
+        this.villageId = villageId;
         this.village = village;
     }
 
@@ -125,6 +128,14 @@ public class UserRegistrationDto {
         this.state = state;
     }
 
+    public Long getVillageId() {
+        return villageId;
+    }
+
+    public void setVillageId(Long villageId) {
+        this.villageId = villageId;
+    }
+
     public String getVillage() {
         return village;
     }
@@ -148,6 +159,7 @@ public class UserRegistrationDto {
         private UserRole role;
         private String district;
         private String state;
+        private Long villageId;
         private String village;
 
         public UserRegistrationDtoBuilder username(String username) {
@@ -190,6 +202,11 @@ public class UserRegistrationDto {
             return this;
         }
 
+        public UserRegistrationDtoBuilder villageId(Long villageId) {
+            this.villageId = villageId;
+            return this;
+        }
+
         public UserRegistrationDtoBuilder village(String village) {
             this.village = village;
             return this;
@@ -197,7 +214,7 @@ public class UserRegistrationDto {
 
         public UserRegistrationDto build() {
             return new UserRegistrationDto(username, password, fullName, phoneNumber,
-                    email, role, district, state, village);
+                    email, role, district, state, villageId, village);
         }
     }
 
@@ -217,6 +234,7 @@ public class UserRegistrationDto {
         if (role != that.role) return false;
         if (district != null ? !district.equals(that.district) : that.district != null) return false;
         if (state != null ? !state.equals(that.state) : that.state != null) return false;
+        if (villageId != null ? !villageId.equals(that.villageId) : that.villageId != null) return false;
         return village != null ? village.equals(that.village) : that.village == null;
     }
 
@@ -231,6 +249,7 @@ public class UserRegistrationDto {
         result = 31 * result + (role != null ? role.hashCode() : 0);
         result = 31 * result + (district != null ? district.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (villageId != null ? villageId.hashCode() : 0);
         result = 31 * result + (village != null ? village.hashCode() : 0);
         return result;
     }
@@ -247,6 +266,7 @@ public class UserRegistrationDto {
                 ", role=" + role +
                 ", district='" + district + '\'' +
                 ", state='" + state + '\'' +
+                ", villageId=" + villageId +
                 ", village='" + village + '\'' +
                 '}';
     }

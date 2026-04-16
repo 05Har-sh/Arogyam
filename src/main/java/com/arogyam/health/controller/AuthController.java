@@ -2,9 +2,11 @@ package com.arogyam.health.controller;
 
 import com.arogyam.health.dto.ApiResponseDto;
 import com.arogyam.health.dto.LoginRequestDto;
+import com.arogyam.health.dto.LoginResponseDto;
 import com.arogyam.health.dto.UserRegistrationDto;
 import com.arogyam.health.dto.UserResponseDto;
 import com.arogyam.health.security.JwtTokenProvider;
+import com.arogyam.health.service.AuthService;
 import com.arogyam.health.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -12,22 +14,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Consider restricting this in production
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -35,13 +32,13 @@ public class AuthController {
     private static final int BEARER_PREFIX_LENGTH = BEARER_PREFIX.length();
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private JwtTokenProvider tokenProvider;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto<Map<String, Object>>> login(@Valid @RequestBody LoginRequestDto loginRequest) {
@@ -51,21 +48,10 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(ApiResponseDto.badRequest("Username and password are required"));
             }
-
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getUsername().trim(),
-                            loginRequest.getPassword()
-                    )
-            );
-
-            String token = tokenProvider.generateToken(authentication);
-
-            // Update last login
-            userService.updateLastLogin(loginRequest.getUsername().trim());
+            LoginResponseDto loginResponse = authService.login(loginRequest);
 
             // Prepare response
-            Map<String, Object> response = createLoginResponse(token, loginRequest.getUsername().trim());
+            Map<String, Object> response = createLoginResponse(loginResponse.getToken(), loginResponse.getUsername());
 
             logger.info("User {} logged in successfully", loginRequest.getUsername());
             return ResponseEntity.ok(ApiResponseDto.success("Login successful", response));

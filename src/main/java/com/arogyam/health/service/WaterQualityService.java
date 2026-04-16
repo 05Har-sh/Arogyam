@@ -130,7 +130,7 @@ public class WaterQualityService {
     }
 
     public Long getReportCountByVillage(Long villageId) {
-        return waterQualityRepository.countByVillageAndStatus(villageId, null);
+        return waterQualityRepository.countByVillageId(villageId);
     }
 
     public WaterQualityEntity getLatestReportByVillage(Long villageId) {

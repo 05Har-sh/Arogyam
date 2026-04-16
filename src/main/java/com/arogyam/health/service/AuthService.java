@@ -4,9 +4,11 @@ import com.arogyam.health.dto.LoginRequestDto;
 import com.arogyam.health.dto.LoginResponseDto;
 import com.arogyam.health.dto.UserRegistrationDto;
 import com.arogyam.health.entity.UserEntity;
+import com.arogyam.health.entity.VillageEntity;
 import com.arogyam.health.exception.ResourceNotFoundException;
 import com.arogyam.health.exception.UnauthorizedException;
 import com.arogyam.health.repository.UserRepository;
+import com.arogyam.health.repository.VillageRepository;
 import com.arogyam.health.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +35,9 @@ public class AuthService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private VillageRepository villageRepository;
 
     public LoginResponseDto login(LoginRequestDto loginRequest) {
         try {
@@ -62,7 +67,8 @@ public class AuthService {
                     .role(user.getRole())
                     .district(user.getDistrict())
                     .state(user.getState())
-                    .villageName(user.getVillage())
+                    .villageId(user.getVillage() != null ? user.getVillage().getId() : null)
+                    .villageName(user.getVillage() != null ? user.getVillage().getName() : null)
                     .build();
         } catch (Exception e) {
             throw new UnauthorizedException("Invalid username or password");
@@ -95,7 +101,12 @@ public class AuthService {
         user.setRole(registrationDto.getRole());
         user.setDistrict(registrationDto.getDistrict());
         user.setState(registrationDto.getState());
-        user.setVillage(registrationDto.getVillage());
+        if (registrationDto.getVillageId() == null) {
+            throw new IllegalArgumentException("Village ID is required");
+        }
+        VillageEntity village = villageRepository.findById(registrationDto.getVillageId())
+                .orElseThrow(() -> new IllegalArgumentException("Village not found"));
+        user.setVillage(village);
         user.setEmail(registrationDto.getEmail());
 
         return userRepository.save(user);

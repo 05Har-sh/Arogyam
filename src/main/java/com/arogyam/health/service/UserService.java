@@ -4,11 +4,14 @@ import com.arogyam.health.dto.UserRegistrationDto;
 import com.arogyam.health.dto.UserResponseDto;
 import com.arogyam.health.entity.UserEntity;
 import com.arogyam.health.entity.UserRole;
+import com.arogyam.health.entity.VillageEntity;
 import com.arogyam.health.repository.UserRepository;
+import com.arogyam.health.repository.VillageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +27,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private VillageRepository villageRepository;
 
     public UserResponseDto createUser(UserRegistrationDto registrationDto) {
         // Validate input
@@ -52,19 +58,7 @@ public class UserService {
         user.setDistrict(registrationDto.getDistrict());
         user.setState(registrationDto.getState());
         user.setIsActive(true);
-
-        // Set village if provided (now as String)
-        if (registrationDto.getVillage() != null && !registrationDto.getVillage().trim().isEmpty()) {
-            user.setVillage(registrationDto.getVillage());
-        }
-
-        // Alternative: If you still have villageId in DTO and want to support it
-        // if (registrationDto.getVillageId() != null) {
-        //     // You'd need a VillageRepository to look up village name by ID
-        //     // VillageEntity village = villageRepository.findById(registrationDto.getVillageId())
-        //     //         .orElseThrow(() -> new RuntimeException("Village not found"));
-        //     // user.setVillage(village.getName());
-        // }
+        user.setVillage(resolveVillage(registrationDto));
 
         UserEntity savedUser = userRepository.save(user);
         return convertToResponseDto(savedUser);
@@ -177,8 +171,8 @@ public class UserService {
         if (updateDto.getState() != null) {
             user.setState(updateDto.getState());
         }
-        if (updateDto.getVillage() != null) {
-            user.setVillage(updateDto.getVillage());
+        if (updateDto.getVillageId() != null || updateDto.getVillage() != null) {
+            user.setVillage(resolveVillage(updateDto));
         }
 
         UserEntity savedUser = userRepository.save(user);
@@ -239,12 +233,23 @@ public class UserService {
         dto.setIsActive(user.getIsActive());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setLastLogin(user.getLastLogin());
-
-        // Set village name directly since it's now a String
         if (user.getVillage() != null) {
-            dto.setVillageName(user.getVillage());
+            dto.setVillageId(user.getVillage().getId());
+            dto.setVillageName(user.getVillage().getName());
         }
 
         return dto;
+    }
+
+    private VillageEntity resolveVillage(UserRegistrationDto dto) {
+        if (dto.getVillageId() != null) {
+            return villageRepository.findById(dto.getVillageId())
+                    .orElseThrow(() -> new RuntimeException("Village not found with id: " + dto.getVillageId()));
+        }
+        if (StringUtils.hasText(dto.getVillage()) && StringUtils.hasText(dto.getDistrict())) {
+            return villageRepository.findByNameAndDistrict(dto.getVillage().trim(), dto.getDistrict().trim())
+                    .orElseThrow(() -> new RuntimeException("Village not found: " + dto.getVillage()));
+        }
+        throw new IllegalArgumentException("Village ID is required");
     }
 }
